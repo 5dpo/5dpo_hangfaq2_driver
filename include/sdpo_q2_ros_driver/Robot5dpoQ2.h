@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include <ros/ros.h>
 
 #include "sdpo_q2_ros_driver/SerialChannelsConfig.h"
@@ -23,6 +25,9 @@ struct Motor {
   double sample_period = 0;
 
  public:
+  void setEncoderRes(const double enc_res);
+  void setGearReduction(const double gear_ratio);
+
   void setEncTicksDelta(const int32_t delta_enc_ticks);
   void setEncTicks(const int32_t total_enc_ticks);
 
