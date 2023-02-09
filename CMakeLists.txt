@@ -20,6 +20,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sdpo_ros_interfaces_hw
+  sdpo_ros_serial_port
   serial_communication_channels
 )
 

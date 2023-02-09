@@ -44,6 +44,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
   <depend>sdpo_ros_interfaces_hw</depend>
+  <depend>sdpo_ros_serial_port</depend>
   <depend>serial_communication_channels</depend>
 
 

@@ -1,6 +1,6 @@
 # 5dpo_q2_ros_driver
 
-**Version 0.0.0**
+**Version 0.1.0**
 
 This repository implements a driver within a ROS package to communicate with the
 firmware present in the 5dpo Hangfa Q2 Discovery robot. The driver is required
@@ -13,11 +13,11 @@ This communication is based on the example `4_callback` provided in the
 
 **With this version, it is possible to do:**
 
-- TBD
+- Communicate with Arduino Mega 2560 using Boost.Asio
+  ([sdpo_ros_serial_port](https://github.com/5dpo/5dpo_ros_serial_port))
 
 **The next version will add these features:**
 
-- Communicate with Arduino Mega 2560 using Boost.Asio
 - Subscribe motors angular speed reference
 - Publish encoders data (encoders + wheels angular speed)
 - Read encoders
@@ -35,19 +35,25 @@ This communication is based on the example `4_callback` provided in the
 
 - [roscpp](https://wiki.ros.org/roscpp)
 - [sdpo_ros_interfaces_hw](https://github.com/5dpo/5dpo_ros_interfaces)
+- [sdpo_ros_serial_port](https://github.com/5dpo/5dpo_ros_serial_port)
 - [serial_communication_channels](https://github.com/5dpo/serial_communication_channels)
 
 ### Parameters
 
-- TBD
+- enc_ticks_per_rev (`float = 48.0`): resolution of the encoder (ticks/rot)
+- gear_reduction (`float = 64.0`): reduction ratio of the transmissions
+  (\[gear_reduction:1\])
+- serial_port_name (`std::string = "/dev/ttyACM0"`): name of the serial port
 
 ### Subscribes
 
-- TBD
+- motors_ref
+  ([mot_ref.msg](https://github.com/5dpo/5dpo_ros_interfaces/blob/main/5dpo_ros_interfaces_hw/msg/mot_ref.msg))
 
 ### Publishes
 
-- TBD
+- motors_encoders
+  ([mot_enc_array.msg](https://github.com/5dpo/5dpo_ros_interfaces/blob/main/5dpo_ros_interfaces_hw/msg/mot_enc_array.msg))
 
 ### Services
 
@@ -61,11 +67,29 @@ None.
 
 ### Compilation
 
-TBC
+```sh
+# Create catkin workspace
+mkdir -p ~/catkin_ws/src
+
+# Clone repository
+cd ~/catkin_ws/src
+git clone git@github.com:5dpo/5dpo_q2_ros_driver.git
+
+# Build
+cd ..
+catkin build
+```
 
 ### Launch
 
-TBC
+1. Open a terminal to launch [roscore](http://wiki.ros.org/roscore)
+   ```sh
+   roscore
+   ```
+2. Launch node in another terminal
+   ```sh
+   rosrun sdpo_q2_ros_driver sdpo_q2_ros_driver_node
+   ```
 
 ## Contacts
 
