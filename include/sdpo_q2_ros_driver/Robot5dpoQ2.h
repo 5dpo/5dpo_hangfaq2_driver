@@ -1,8 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include <mutex>
 
-#include <ros/ros.h>
+#include <sdpo_ros_serial_port/AsyncSerial.h>
 
 #include "sdpo_q2_ros_driver/SerialChannelsConfig.h"
 
@@ -25,18 +26,46 @@ struct Motor {
   double sample_period = 0;
 
  public:
-  void setEncoderRes(const double enc_res);
-  void setGearReduction(const double gear_ratio);
+  void setEncoderRes(const double& enc_res);
+  void setGearReduction(const double& gear_ratio);
 
-  void setEncTicksDelta(const int32_t delta_enc_ticks);
-  void setEncTicks(const int32_t total_enc_ticks);
+  void setEncTicksDelta(const int32_t& delta_enc_ticks);
+  void setEncTicks(const int32_t& total_enc_ticks);
 
-  void setWr(const double w_ref);
+  void setWr(const double& w_ref);
 
-  void setSampleTime(const int32_t time_sample);
+  void setSampleTime(const int32_t& time_sample);
 
  private:
   void setW();
+};
+
+class Robot5dpoQ2 {
+ public:
+  Motor mot[4];
+  std::mutex mtx_;
+
+ private:
+  std::string serial_port_name_;
+  SerialChannelsConfig *serial_cfg_;
+  CallbackAsyncSerial *serial_async_;
+
+ public:
+  Robot5dpoQ2();
+  Robot5dpoQ2(std::string serial_port_name);
+  ~Robot5dpoQ2();
+
+  bool openSerial();
+  void closeSerial();
+  bool isSerialOpen();
+
+  void setSerialPortName(const std::string& serial_port_name);
+
+  void stopMotors();
+
+ private:
+  void rcvSerialData(const char *data, unsigned int len);
+  void sendSerialData();
 };
 
 } // namespace sdpo_q2_ros_driver

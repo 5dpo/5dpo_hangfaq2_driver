@@ -1,12 +1,12 @@
 # 5dpo_q2_ros_driver
 
-**Version 0.1.0**
+**Version 1.0.0**
 
 This repository implements a driver within a ROS package to communicate with the
 firmware present in the 5dpo Hangfa Q2 Discovery robot. The driver is required
 for communicating with the robot and have available all its different functions.
 
-The serial communication is handle by
+The serial communication is handled by
 [Boost.Asio](https://www.boost.org/doc/libs/1_80_0/doc/html/boost_asio.html).
 This communication is based on the example `4_callback` provided in the
 [serial-port](https://github.com/fedetft/serial-port) GitHub repository.
@@ -15,13 +15,13 @@ This communication is based on the example `4_callback` provided in the
 
 - Communicate with Arduino Mega 2560 using Boost.Asio
   ([sdpo_ros_serial_port](https://github.com/5dpo/5dpo_ros_serial_port))
-
-**The next version will add these features:**
-
 - Subscribe motors angular speed reference
 - Publish encoders data (encoders + wheels angular speed)
 - Read encoders
 - Set motors speed
+
+**The next version will add these features:**
+
 - Publish optionally the odometry data
 
 ## ROS
@@ -65,7 +65,7 @@ None.
 
 ## Usage
 
-### Compilation
+### Build
 
 ```sh
 # Create catkin workspace
@@ -82,14 +82,9 @@ catkin build
 
 ### Launch
 
-1. Open a terminal to launch [roscore](http://wiki.ros.org/roscore)
-   ```sh
-   roscore
-   ```
-2. Launch node in another terminal
-   ```sh
-   rosrun sdpo_q2_ros_driver sdpo_q2_ros_driver_node
-   ```
+```sh
+roslaunch sdpo_q2_ros_driver sdpo_q2_ros_driver.launch
+```
 
 ## Contacts
 
