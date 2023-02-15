@@ -57,8 +57,8 @@ class Robot5dpoQ2 {
   Robot5dpoQ2(std::string serial_port_name);
   ~Robot5dpoQ2();
 
-  bool openSerial();
-  void closeSerial();
+  bool openSerial(const bool dbg = false);
+  void closeSerial(const bool dbg = false);
   bool isSerialOpen();
 
   void setSerialPortName(const std::string& serial_port_name);

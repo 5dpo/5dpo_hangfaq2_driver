@@ -84,7 +84,7 @@ Robot5dpoQ2::~Robot5dpoQ2() {
   closeSerial();
 }
 
-bool Robot5dpoQ2::openSerial() {
+bool Robot5dpoQ2::openSerial(const bool dbg) {
   try {
     serial_async_ = new CallbackAsyncSerial(
         serial_port_name_, kSerialBaudRate,
@@ -98,21 +98,25 @@ bool Robot5dpoQ2::openSerial() {
     return true;
   } catch (boost::system::system_error& e) {
     serial_async_ = nullptr;
-    std::cerr << "[Robot5dpoQ2.cpp] Robot5dpoQ2::openSerial: "
-                 "Error when opening the serial device "
-              << serial_port_name_ << std::endl;
+    if (dbg) {
+      std::cerr << "[Robot5dpoQ2.cpp] Robot5dpoQ2::openSerial: "
+                   "Error when opening the serial device "
+                << serial_port_name_ << std::endl;
+    }
     return false;
   }
 }
 
-void Robot5dpoQ2::closeSerial() {
+void Robot5dpoQ2::closeSerial(const bool dbg) {
   if (serial_async_) {
     try {
       serial_async_->close();
     } catch(...) {
-      std::cerr << "[Robot5dpoQ2.cpp] Robot5dpoQ2::closeSerial: "
-                   "Error when closing the serial device "
-                << serial_port_name_ << std::endl;
+      if (dbg) {
+        std::cerr << "[Robot5dpoQ2.cpp] Robot5dpoQ2::closeSerial: "
+                     "Error when closing the serial device "
+                  << serial_port_name_ << std::endl;
+      }
     }
     delete serial_async_;
   }
