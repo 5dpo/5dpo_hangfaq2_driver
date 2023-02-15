@@ -1,6 +1,6 @@
 # 5dpo_q2_ros_driver
 
-**Version 1.2.1**
+**Version 2.0.0**
 
 This repository implements a driver within a ROS package to communicate with the
 firmware present in the 5dpo Hangfa Q2 Discovery robot. The driver is required
