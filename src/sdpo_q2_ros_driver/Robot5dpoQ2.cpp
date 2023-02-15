@@ -15,7 +15,7 @@ const auto kSerialFlowCtrl = boost::asio::serial_port_base::flow_control::none;
 void Motor::setEncoderRes(const double& enc_res) {
   if (enc_res <= 0) {
     throw std::invalid_argument(
-        "Motor::setEncoderRes: "
+        "[Robot5dpoQ2.cpp] Motor::setEncoderRes: "
         "resolution of the encoder must be greater than 0 (enc ticks / rev)");
   }
   encoder_res = enc_res;
@@ -24,7 +24,7 @@ void Motor::setEncoderRes(const double& enc_res) {
 void Motor::setGearReduction(const double& gear_ratio) {
   if (gear_ratio <= 0) {
     throw std::invalid_argument(
-        "Motor::setGearReduction: "
+        "[Robot5dpoQ2.cpp] Motor::setGearReduction: "
         "gear reduction ratio of the motor must be greater than 0 ([n:1])");
   }
   gear_reduction = gear_ratio;
@@ -50,8 +50,19 @@ void Motor::setWr(const double& w_ref) {
 
 void Motor::setSampleTime(const int32_t& time_sample) {
   sample_time_prev = sample_time;
-  sample_time = ((double) time_sample) / 1.0e6;   // us > s
+  sample_time = static_cast<double>(((float) time_sample) / 1.0e6); // us > s
   sample_period = sample_time - sample_time_prev;
+}
+
+void Motor::reset() {
+  enc_ticks = 0;
+  enc_ticks_prev = 0;
+  enc_ticks_delta = 0;
+  w_r = 0;
+  w = 0;
+  sample_time = 0;
+  sample_time_prev = 0;
+  sample_period = 0;
 }
 
 void Motor::setW() {
@@ -87,7 +98,8 @@ bool Robot5dpoQ2::openSerial() {
     return true;
   } catch (boost::system::system_error& e) {
     serial_async_ = nullptr;
-    std::cerr << "[sdpo_q2_ros_driver] Error when opening the serial device "
+    std::cerr << "[Robot5dpoQ2.cpp] Robot5dpoQ2::openSerial: "
+                 "Error when opening the serial device "
               << serial_port_name_ << std::endl;
     return false;
   }
@@ -98,7 +110,8 @@ void Robot5dpoQ2::closeSerial() {
     try {
       serial_async_->close();
     } catch(...) {
-      std::cerr << "[sdpo_q2_ros_driver] Error when closing the serial device "
+      std::cerr << "[Robot5dpoQ2.cpp] Robot5dpoQ2::closeSerial: "
+                   "Error when closing the serial device "
                 << serial_port_name_ << std::endl;
     }
     delete serial_async_;
@@ -107,12 +120,17 @@ void Robot5dpoQ2::closeSerial() {
 
 bool Robot5dpoQ2::isSerialOpen() {
   return serial_async_ ?
-         !(serial_async_->errorStatus() || (!serial_async_->isOpen())) :
-         false;
+         !(serial_async_->errorStatus() || (!serial_async_->isOpen())) : false;
 }
 
 void Robot5dpoQ2::setSerialPortName(const std::string& serial_port_name) {
   serial_port_name_ = serial_port_name;
+}
+
+void Robot5dpoQ2::reset() {
+  for(auto& m : mot) {
+    m.reset();
+  }
 }
 
 void Robot5dpoQ2::stopMotors() {
@@ -161,6 +179,12 @@ void Robot5dpoQ2::rcvSerialData(const char *data, unsigned int len) {
           for(auto& m : mot) {
             m.setSampleTime(serial_cfg_->channel_k);
           }
+          mtx_.unlock();
+          break;
+
+        case 'r':
+          mtx_.lock();
+          reset();
           mtx_.unlock();
           break;
 

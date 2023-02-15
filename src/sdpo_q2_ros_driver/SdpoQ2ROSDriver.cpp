@@ -19,13 +19,16 @@ void SdpoQ2ROSDriver::run() {
 
   while (ros::ok()) {
     if (sample_time_ - sample_time_prev_ > ros::Duration(kWatchdogMotWRef)) {
+      ROS_WARN("[sdpo_q2_ros_driver] Watchdog timer to monitor the motors "
+               "angular speed reference triggered (action: stop motors)");
       rob_.mtx_.lock();
       rob_.stopMotors();
       rob_.mtx_.unlock();
     }
 
     if (!rob_.isSerialOpen()) {
-      ROS_WARN("[sdpo_q2_ros_driver] Serial port %s not available",
+      ROS_WARN("[sdpo_q2_ros_driver] Serial port %s not available "
+               "(action: stop motors + trying close and open port)",
                serial_port_name_.c_str());
       rob_.mtx_.lock();
       rob_.stopMotors();
