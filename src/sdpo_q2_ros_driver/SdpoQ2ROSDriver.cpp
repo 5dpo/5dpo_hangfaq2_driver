@@ -15,7 +15,8 @@ SdpoQ2ROSDriver::SdpoQ2ROSDriver() : loop_rate_(kCtrlFreq) {
 }
 
 void SdpoQ2ROSDriver::run() {
-  sample_time_prev_ = ros::Time::now();
+  sample_time_prev_ = ros::Time::now() - ros::Duration(kWatchdogMotWRef * 2);
+  sample_time_ = ros::Time::now();
 
   while (ros::ok()) {
     if (sample_time_ - sample_time_prev_ > ros::Duration(kWatchdogMotWRef)) {
@@ -35,6 +36,10 @@ void SdpoQ2ROSDriver::run() {
       rob_.mtx_.unlock();
       rob_.closeSerial();
       rob_.openSerial();
+      if (rob_.isSerialOpen()) {
+        ROS_INFO("[sdpo_q2_ros_driver] Serial port %s successfully reconnected",
+                 serial_port_name_.c_str());
+      }
     } else {
       pubMotEnc();
     }
