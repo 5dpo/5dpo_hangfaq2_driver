@@ -36,6 +36,8 @@ struct Motor {
 
   void setSampleTime(const int32_t& time_sample);
 
+  void reset();
+
  private:
   void setW();
 };
@@ -60,6 +62,8 @@ class Robot5dpoQ2 {
   bool isSerialOpen();
 
   void setSerialPortName(const std::string& serial_port_name);
+
+  void reset();
 
   void stopMotors();
 
