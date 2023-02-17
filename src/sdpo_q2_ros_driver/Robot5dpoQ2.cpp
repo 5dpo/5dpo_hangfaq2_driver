@@ -84,6 +84,13 @@ Robot5dpoQ2::~Robot5dpoQ2() {
   closeSerial();
 }
 
+void Robot5dpoQ2::init() {
+  reset();
+  if (isSerialOpen()) {
+    sendSerialData();
+  }
+}
+
 bool Robot5dpoQ2::openSerial(const bool dbg) {
   try {
     serial_async_ = new CallbackAsyncSerial(
