@@ -7,6 +7,7 @@ SdpoQ2ROSDriver::SdpoQ2ROSDriver() : loop_rate_(kCtrlFreq) {
 
   rob_.setSerialPortName(serial_port_name_);
   rob_.openSerial();
+  rob_.init();
 
   pub_mot_enc_ = nh.advertise<sdpo_ros_interfaces_hw::mot_enc_array>(
       "motors_encoders", 1);
@@ -37,6 +38,7 @@ void SdpoQ2ROSDriver::run() {
       rob_.closeSerial();
       rob_.openSerial();
       if (rob_.isSerialOpen()) {
+        rob_.init();
         ROS_INFO("[sdpo_q2_ros_driver] Serial port %s successfully reconnected",
                  serial_port_name_.c_str());
       }

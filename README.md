@@ -1,6 +1,6 @@
 # 5dpo_q2_ros_driver
 
-**Version 2.0.0**
+**Version 2.1.0**
 
 This repository implements a driver within a ROS package to communicate with the
 firmware present in the 5dpo Hangfa Q2 Discovery robot. The driver is required
@@ -21,6 +21,8 @@ This communication is based on the example `4_callback` provided in the
 - Set motors speed
 - Reset driver upon reset signal
 - Watchdog timer to monitor the motors angular speed reference
+- Send serial message to the firmware upon reconnection of the serial port
+  communication
 
 **The next version will add these features:**
 
