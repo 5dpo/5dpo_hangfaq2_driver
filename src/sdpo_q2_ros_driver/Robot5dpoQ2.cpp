@@ -32,6 +32,7 @@ void Motor::setGearReduction(const double& gear_ratio) {
 
 void Motor::setEncTicksDelta(const int32_t& delta_enc_ticks) {
   enc_ticks_delta = delta_enc_ticks;
+  enc_ticks_delta_pub += enc_ticks_delta;
   enc_ticks_prev = enc_ticks;
   enc_ticks += enc_ticks_delta;
   setW();
@@ -41,7 +42,14 @@ void Motor::setEncTicks(const int32_t& total_enc_ticks) {
   enc_ticks_prev = enc_ticks;
   enc_ticks = total_enc_ticks;
   enc_ticks_delta = enc_ticks - enc_ticks_prev;
+  enc_ticks_delta_pub += enc_ticks_delta;
   setW();
+}
+
+double Motor::getEncTicksDeltaPub() {
+  double pub_delta = enc_ticks_delta_pub;
+  enc_ticks_delta_pub = 0;
+  return pub_delta;
 }
 
 void Motor::setWr(const double& w_ref) {
@@ -58,6 +66,7 @@ void Motor::reset() {
   enc_ticks = 0;
   enc_ticks_prev = 0;
   enc_ticks_delta = 0;
+  enc_ticks_delta_pub = 0;
   w_r = 0;
   w = 0;
   sample_time = 0;
