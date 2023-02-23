@@ -92,7 +92,7 @@ void SdpoQ2ROSDriver::pubMotEnc() {
 
   rob_.mtx_.lock();
   for (int i = 0; i < 4; i++) {
-    msg.mot_enc_array_data[i].encoder_delta = rob_.mot[i].enc_ticks_delta;
+    msg.mot_enc_array_data[i].encoder_delta = rob_.mot[i].getEncTicksDeltaPub();
     msg.mot_enc_array_data[i].ticks_per_rev =
         rob_.mot[i].encoder_res * rob_.mot[i].gear_reduction;
     msg.mot_enc_array_data[i].angular_speed = rob_.mot[i].w;
