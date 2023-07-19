@@ -3,11 +3,11 @@
 #include <iostream>
 #include <mutex>
 
-#include <sdpo_ros_serial_port/AsyncSerial.h>
+#include <sdpo_serial_port/AsyncSerial.h>
 
-#include "sdpo_q2_ros_driver/SerialChannelsConfig.h"
+#include "sdpo_hangfaq2_driver/SerialChannelsConfig.h"
 
-namespace sdpo_q2_ros_driver {
+namespace sdpo_hangfaq2_driver {
 
 const int kCtrlFreq = 25;
 const int kMotCtrlFreq = 100;
@@ -44,7 +44,7 @@ struct Motor {
   void setW();
 };
 
-class Robot5dpoQ2 {
+class SdpoHangfaQ2 {
  public:
   Motor mot[4];
   std::mutex mtx_;
@@ -55,9 +55,9 @@ class Robot5dpoQ2 {
   CallbackAsyncSerial *serial_async_;
 
  public:
-  Robot5dpoQ2();
-  Robot5dpoQ2(std::string serial_port_name);
-  ~Robot5dpoQ2();
+  SdpoHangfaQ2();
+  SdpoHangfaQ2(std::string serial_port_name);
+  ~SdpoHangfaQ2();
 
   void init();
 
@@ -76,4 +76,4 @@ class Robot5dpoQ2 {
   void sendSerialData();
 };
 
-} // namespace sdpo_q2_ros_driver
+} // namespace sdpo_hangfaq2_driver

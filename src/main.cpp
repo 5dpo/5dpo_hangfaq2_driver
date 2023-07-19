@@ -1,10 +1,13 @@
-#include "sdpo_q2_ros_driver/SdpoQ2ROSDriver.h"
+#include "sdpo_hangfaq2_driver/SdpoHangfaQ2DriverROS.h"
 
 int main(int argc, char* argv[]) {
-  ros::init(argc, argv, "sdpo_q2_ros_driver");
 
-  sdpo_q2_ros_driver::SdpoQ2ROSDriver q2_ros_driver;
-  q2_ros_driver.run();
+  rclcpp::init(argc, argv);
+
+  rclcpp::spin(std::make_shared<sdpo_hangfaq2_driver::SdpoHangfaQ2DriverROS>());
+
+  rclcpp::shutdown();
 
   return 0;
+
 }

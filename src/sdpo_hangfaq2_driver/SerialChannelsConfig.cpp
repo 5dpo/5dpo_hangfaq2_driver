@@ -1,4 +1,4 @@
-#include "sdpo_q2_ros_driver/SerialChannelsConfig.h"
+#include "sdpo_hangfaq2_driver/SerialChannelsConfig.h"
 
 SerialChannelsConfig serial_channels_config_;
 

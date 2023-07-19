@@ -1,10 +1,10 @@
-#include "sdpo_q2_ros_driver/Robot5dpoQ2.h"
+#include "sdpo_hangfaq2_driver/SdpoHangfaQ2.h"
 
 #include <exception>
 #include <utility>
 #include <vector>
 
-namespace sdpo_q2_ros_driver {
+namespace sdpo_hangfaq2_driver {
 
 const unsigned int kSerialBaudRate = 115200;
 const auto kSerialDataBits = boost::asio::serial_port_base::character_size(8);
@@ -15,7 +15,7 @@ const auto kSerialFlowCtrl = boost::asio::serial_port_base::flow_control::none;
 void Motor::setEncoderRes(const double& enc_res) {
   if (enc_res <= 0) {
     throw std::invalid_argument(
-        "[Robot5dpoQ2.cpp] Motor::setEncoderRes: "
+        "[SdpoHangfaQ2.cpp] Motor::setEncoderRes: "
         "resolution of the encoder must be greater than 0 (enc ticks / rev)");
   }
   encoder_res = enc_res;
@@ -24,7 +24,7 @@ void Motor::setEncoderRes(const double& enc_res) {
 void Motor::setGearReduction(const double& gear_ratio) {
   if (gear_ratio <= 0) {
     throw std::invalid_argument(
-        "[Robot5dpoQ2.cpp] Motor::setGearReduction: "
+        "[SdpoHangfaQ2.cpp] Motor::setGearReduction: "
         "gear reduction ratio of the motor must be greater than 0 ([n:1])");
   }
   gear_reduction = gear_ratio;
@@ -79,28 +79,29 @@ void Motor::setW() {
       (gear_reduction * encoder_res);
 }
 
-Robot5dpoQ2::Robot5dpoQ2() : serial_async_(nullptr) {
+SdpoHangfaQ2::SdpoHangfaQ2()
+    : serial_port_name_("/dev/ttyACM0") , serial_async_(nullptr) {
   serial_cfg_ = InitCommunications();
 }
 
-Robot5dpoQ2::Robot5dpoQ2(std::string serial_port_name)
-    : serial_async_(nullptr),
-      serial_port_name_(std::move(serial_port_name)) {
+SdpoHangfaQ2::SdpoHangfaQ2(std::string serial_port_name)
+    : serial_port_name_(std::move(serial_port_name)),
+      serial_async_(nullptr) {
   serial_cfg_ = InitCommunications();
 }
 
-Robot5dpoQ2::~Robot5dpoQ2() {
+SdpoHangfaQ2::~SdpoHangfaQ2() {
   closeSerial();
 }
 
-void Robot5dpoQ2::init() {
+void SdpoHangfaQ2::init() {
   reset();
   if (isSerialOpen()) {
     sendSerialData();
   }
 }
 
-bool Robot5dpoQ2::openSerial(const bool dbg) {
+bool SdpoHangfaQ2::openSerial(const bool dbg) {
   try {
     serial_async_ = new CallbackAsyncSerial(
         serial_port_name_, kSerialBaudRate,
@@ -109,13 +110,13 @@ bool Robot5dpoQ2::openSerial(const bool dbg) {
         boost::asio::serial_port_base::flow_control(kSerialFlowCtrl),
         boost::asio::serial_port_base::stop_bits(kSerialStopBits));
     serial_async_->setCallback(
-        std::bind(&Robot5dpoQ2::rcvSerialData, this,
+        std::bind(&SdpoHangfaQ2::rcvSerialData, this,
                   std::placeholders::_1, std::placeholders::_2));
     return true;
   } catch (boost::system::system_error& e) {
     serial_async_ = nullptr;
     if (dbg) {
-      std::cerr << "[Robot5dpoQ2.cpp] Robot5dpoQ2::openSerial: "
+      std::cerr << "[SdpoHangfaQ2.cpp] SdpoHangfaQ2::openSerial: "
                    "Error when opening the serial device "
                 << serial_port_name_ << std::endl;
     }
@@ -123,13 +124,13 @@ bool Robot5dpoQ2::openSerial(const bool dbg) {
   }
 }
 
-void Robot5dpoQ2::closeSerial(const bool dbg) {
+void SdpoHangfaQ2::closeSerial(const bool dbg) {
   if (serial_async_) {
     try {
       serial_async_->close();
     } catch(...) {
       if (dbg) {
-        std::cerr << "[Robot5dpoQ2.cpp] Robot5dpoQ2::closeSerial: "
+        std::cerr << "[SdpoHangfaQ2.cpp] SdpoHangfaQ2::closeSerial: "
                      "Error when closing the serial device "
                   << serial_port_name_ << std::endl;
       }
@@ -138,28 +139,28 @@ void Robot5dpoQ2::closeSerial(const bool dbg) {
   }
 }
 
-bool Robot5dpoQ2::isSerialOpen() {
+bool SdpoHangfaQ2::isSerialOpen() {
   return serial_async_ ?
          !(serial_async_->errorStatus() || (!serial_async_->isOpen())) : false;
 }
 
-void Robot5dpoQ2::setSerialPortName(const std::string& serial_port_name) {
+void SdpoHangfaQ2::setSerialPortName(const std::string& serial_port_name) {
   serial_port_name_ = serial_port_name;
 }
 
-void Robot5dpoQ2::reset() {
+void SdpoHangfaQ2::reset() {
   for(auto& m : mot) {
     m.reset();
   }
 }
 
-void Robot5dpoQ2::stopMotors() {
+void SdpoHangfaQ2::stopMotors() {
   for(auto& m : mot) {
     m.w_r = 0;
   }
 }
 
-void Robot5dpoQ2::rcvSerialData(const char *data, unsigned int len) {
+void SdpoHangfaQ2::rcvSerialData(const char *data, unsigned int len) {
   std::vector<char> vec(data, data + len);
   char channel;
 
@@ -216,7 +217,7 @@ void Robot5dpoQ2::rcvSerialData(const char *data, unsigned int len) {
   }
 }
 
-void Robot5dpoQ2::sendSerialData() {
+void SdpoHangfaQ2::sendSerialData() {
   mtx_.lock();
   serial_cfg_->channel_G = static_cast<float>(mot[0].w_r);
   serial_cfg_->channel_H = static_cast<float>(mot[1].w_r);
@@ -230,4 +231,4 @@ void Robot5dpoQ2::sendSerialData() {
   serial_async_->writeString(SendChannel('J'));
 }
 
-} // namespace sdpo_q2_ros_driver
+} // namespace sdpo_hangfaq2_driver
