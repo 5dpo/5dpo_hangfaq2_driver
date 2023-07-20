@@ -59,6 +59,8 @@ class SdpoHangfaQ2DriverROS : public rclcpp::Node
 
   void checkSerialComms();
 
+  void run();
+
   void pubMotEnc();
   void subMotRef(
       const sdpo_drivers_interfaces::msg::MotRefArray::SharedPtr msg);

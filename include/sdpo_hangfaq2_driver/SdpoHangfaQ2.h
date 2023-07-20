@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <functional>
 #include <mutex>
 
 #include <sdpo_serial_port/AsyncSerial.h>
@@ -48,6 +49,8 @@ class SdpoHangfaQ2 {
  public:
   Motor mot[4];
   std::mutex mtx_;
+
+  std::function<void()> run;
 
  private:
   std::string serial_port_name_;

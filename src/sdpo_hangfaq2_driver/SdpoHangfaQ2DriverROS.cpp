@@ -17,7 +17,10 @@ SdpoHangfaQ2DriverROS::SdpoHangfaQ2DriverROS()
 
   rob_.setSerialPortName(serial_port_name_.get_value<std::string>());
   rob_.openSerial();
+
+  rob_.run = std::bind(&SdpoHangfaQ2DriverROS::run, this);
   rob_.init();
+
 
 
 
@@ -34,6 +37,11 @@ SdpoHangfaQ2DriverROS::SdpoHangfaQ2DriverROS()
 
   serial_port_timer_ = this->create_wall_timer(
       1s, std::bind(&SdpoHangfaQ2DriverROS::checkSerialComms, this));
+
+
+
+  sample_time_ = this->get_clock()->now() -
+                 rclcpp::Duration::from_seconds(kWatchdogMotWRef * 2);
 }
 
 
@@ -106,13 +114,29 @@ void SdpoHangfaQ2DriverROS::checkSerialComms() {
 
 
 
+void SdpoHangfaQ2DriverROS::run() {
+
+  if (this->get_clock()->now() - sample_time_ >
+      rclcpp::Duration::from_seconds(kWatchdogMotWRef))
+  {
+    rob_.mtx_.lock();
+    rob_.stopMotors();
+    rob_.mtx_.unlock();
+  }
+
+  pubMotEnc();
+
+}
+
+
+
 void SdpoHangfaQ2DriverROS::pubMotEnc() {
 
   sdpo_drivers_interfaces::msg::MotEncArray msg;
 
 
 
-  msg.stamp = this->now();
+  msg.stamp = this->get_clock()->now();
   msg.mot_enc.resize(4);
 
 

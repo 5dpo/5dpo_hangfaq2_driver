@@ -172,6 +172,12 @@ void SdpoHangfaQ2::rcvSerialData(const char *data, unsigned int len) {
         switch (channel) {
         case 'g':
           sendSerialData();
+
+          if (run)
+          {
+            run();
+          }
+
           mtx_.lock();
           mot[0].setEncTicks(serial_cfg_->channel_g);
           mtx_.unlock();
