@@ -8,7 +8,7 @@
       name="sdpo_hangfaq2_driver"
       namespace="$(var robot_id)">
 
-    <param from="$(dirname)/../config/sdpo_hangfaq2_driver.yaml"/>
+    <param from="$(find-pkg-share sdpo_hangfaq2_driver)/config/sdpo_hangfaq2_driver.yaml"/>
 
   </node>
 

@@ -66,6 +66,14 @@ install(
 
 
 
+# Default Config Installation Rules
+install(
+  DIRECTORY config
+  DESTINATION share/${PROJECT_NAME}
+)
+
+
+
 # Testing
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
