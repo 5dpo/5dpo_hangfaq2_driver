@@ -23,6 +23,10 @@ class SdpoHangfaQ2DriverROS : public rclcpp::Node
 
 
 
+  rclcpp::TimerBase::SharedPtr serial_port_timer_;
+
+
+
   rclcpp::Time sample_time_;
 
 
@@ -37,6 +41,10 @@ class SdpoHangfaQ2DriverROS : public rclcpp::Node
 
 
 
+  bool serial_comms_first_fault_;
+
+
+
 
 
  public:
@@ -48,6 +56,8 @@ class SdpoHangfaQ2DriverROS : public rclcpp::Node
  private:
 
   void getParam();
+
+  void checkSerialComms();
 
   void pubMotEnc();
   void subMotRef(
