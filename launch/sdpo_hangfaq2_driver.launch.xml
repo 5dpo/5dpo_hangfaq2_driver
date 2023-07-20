@@ -8,7 +8,9 @@
       name="sdpo_hangfaq2_driver"
       namespace="$(var robot_id)">
 
-    <param from="$(find-pkg-share sdpo_hangfaq2_driver)/config/sdpo_hangfaq2_driver.yaml"/>
+    <param name="encoder_res" value="48.0"/>
+    <param name="gear_reduction" value="64.0"/>
+    <param name="serial_port_name" value="/dev/ttyACM0"/>
 
   </node>
 

@@ -1,6 +1,0 @@
-/$(var robot_id):
-  sdpo_hangfaq2_driver:
-    ros__parameters:
-      encoder_res: 48.0
-      gear_reduction: 64.0
-      serial_port_name: "/dev/ttyACM0"
