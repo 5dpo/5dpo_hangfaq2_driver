@@ -8,7 +8,7 @@
 
 namespace sdpo_hangfaq2_driver {
 
-const double kWatchdogMotWRef = 0.2;
+const double kWatchdogMotWRef = 0.5;
 
 class SdpoHangfaQ2DriverROS : public rclcpp::Node
 {

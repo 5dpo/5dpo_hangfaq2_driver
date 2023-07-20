@@ -1,4 +1,4 @@
-# 5dpo_q2_ros_driver
+# [5dpo_hangfaq2_driver](https://github.com/5dpo/5dpo_hangfaq2_driver)
 
 **Version 2.1.1**
 
@@ -23,6 +23,7 @@ This communication is based on the example `4_callback` provided in the
 - Watchdog timer to monitor the motors angular speed reference
 - Send serial message to the firmware upon reconnection of the serial port
   communication
+- Check automatically (1Hz) the status of the serial port communication
 
 **The next version will add these features:**
 
@@ -30,21 +31,26 @@ This communication is based on the example `4_callback` provided in the
 
 ## ROS
 
-**Current version:**
+**foxy**
 
-- [Ubuntu 20.04.5 LTS](https://releases.ubuntu.com/focal/)
-- [ROS Noetic](https://wiki.ros.org/noetic)
+- [Ubuntu 20.04.6 LTS](https://releases.ubuntu.com/focal/)
+- [ROS 2 Foxy](https://docs.ros.org/en/foxy/)
+
+**noetic**
+
+- [Ubuntu 20.04.6 LTS](https://releases.ubuntu.com/focal/)
+- [ROS 1 Noetic](https://wiki.ros.org/noetic/)
 
 ### Dependencies
 
-- [roscpp](https://wiki.ros.org/roscpp)
-- [sdpo_ros_interfaces_hw](https://github.com/5dpo/5dpo_ros_interfaces)
-- [sdpo_ros_serial_port](https://github.com/5dpo/5dpo_ros_serial_port)
+- [rclcpp](https://index.ros.org/r/rclcpp/)
+- [sdpo_drivers_interfaces](https://github.com/5dpo/5dpo_drivers_interfaces)
+- [sdpo_serial_port](https://github.com/5dpo/5dpo_serial_port)
 - [serial_communication_channels](https://github.com/5dpo/serial_communication_channels)
 
 ### Parameters
 
-- enc_ticks_per_rev (`float = 48.0`): resolution of the encoder (ticks/rot)
+- encoder_res (`float = 48.0`): resolution of the encoder (ticks/rot)
 - gear_reduction (`float = 64.0`): reduction ratio of the transmissions
   (\[gear_reduction:1\])
 - serial_port_name (`std::string = "/dev/ttyACM0"`): name of the serial port
@@ -52,12 +58,12 @@ This communication is based on the example `4_callback` provided in the
 ### Subscribes
 
 - motors_ref
-  ([mot_ref.msg](https://github.com/5dpo/5dpo_ros_interfaces/blob/main/5dpo_ros_interfaces_hw/msg/mot_ref.msg))
+  ([MotRefArray.msg](https://github.com/5dpo/5dpo_drivers_interfaces/blob/foxy/msg/MotRefArray.msg))
 
 ### Publishes
 
-- motors_encoders
-  ([mot_enc_array.msg](https://github.com/5dpo/5dpo_ros_interfaces/blob/main/5dpo_ros_interfaces_hw/msg/mot_enc_array.msg))
+- motors_enc
+  ([MotEncArray.msg](https://github.com/5dpo/5dpo_drivers_interfaces/blob/foxy/msg/MotEncArray.msg))
 
 ### Services
 
@@ -72,34 +78,33 @@ None.
 ### Build
 
 ```sh
-# Create catkin workspace
-mkdir -p ~/catkin_ws/src
+# ROS 2
+source /opt/ros/foxy/setup.bash
 
-# Clone repository
-cd ~/catkin_ws/src
-git clone git@github.com:5dpo/5dpo_q2_ros_driver.git
+# Create workspace
+mkdir -p ~/ros2_ws/src
+
+# Clone the repository
+cd ~/ros2_ws/src
+git clone git@github.com:5dpo/5dpo_hangfaq2_driver.git
 
 # Build
-cd ..
-catkin build
+colcon build
+source install/setup.bash
 ```
 
 ### Launch
 
 ```sh
-roslaunch sdpo_q2_ros_driver sdpo_q2_ros_driver.launch
+ros2 launch sdpo_hangfaq2_driver sdpo_hangfaq2_driver.launch.xml
 ```
+
+## Acknowledges
+
+- [Faculty of Engineering, University of Porto (FEUP)](https://sigarra.up.pt/feup/en/)
+- [INESC TEC - Institute for Systems and Computer Engineering, Technology and Science](https://www.inesctec.pt/en/)
 
 ## Contacts
 
 If you have any questions or you want to know more about this work, please
-contact one of the contributors of this package:
-
-- Héber Miguel Sobreira ([gitlab](https://gitlab.inesctec.pt/heber.m.sobreira),
-  [inesctec](mailto:heber.m.sobreira@inesctec.pt))
-- Ricardo B. Sousa ([github](https://github.com/sousarbarb/),
-  [gitlab](https://gitlab.com/sousarbarb/),
-  [personal](mailto:sousa.ricardob@outlook.com),
-  [feup:professor](mailto:rbs@fe.up.pt),
-  [feup:student](mailto:up201503004@edu.fe.up.pt),
-  [inesctec](mailto:ricardo.b.sousa@inesctec.pt))
+contact any member of the 5dpo Robotics Team.
