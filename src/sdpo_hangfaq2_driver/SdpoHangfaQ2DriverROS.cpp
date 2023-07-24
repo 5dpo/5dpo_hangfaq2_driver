@@ -15,12 +15,7 @@ SdpoHangfaQ2DriverROS::SdpoHangfaQ2DriverROS()
 
 
 
-  rob_.setSerialPortName(serial_port_name_.get_value<std::string>());
-  rob_.openSerial();
-
-  rob_.run = std::bind(&SdpoHangfaQ2DriverROS::run, this);
-  rob_.init();
-
+  sample_time_ = this->now();
 
 
 
@@ -35,12 +30,16 @@ SdpoHangfaQ2DriverROS::SdpoHangfaQ2DriverROS()
 
 
 
+  rob_.setSerialPortName(serial_port_name_.get_value<std::string>());
+  rob_.openSerial();
+
+  rob_.run = std::bind(&SdpoHangfaQ2DriverROS::run, this);
+  rob_.init();
+
+
+
   serial_port_timer_ = this->create_wall_timer(
       1s, std::bind(&SdpoHangfaQ2DriverROS::checkSerialComms, this));
-
-
-
-  sample_time_ = this->now();
 }
 
 
