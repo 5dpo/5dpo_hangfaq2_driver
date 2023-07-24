@@ -40,8 +40,7 @@ SdpoHangfaQ2DriverROS::SdpoHangfaQ2DriverROS()
 
 
 
-  sample_time_ = this->get_clock()->now() -
-                 rclcpp::Duration::from_seconds(kWatchdogMotWRef * 2);
+  sample_time_ = this->now();
 }
 
 
@@ -116,12 +115,25 @@ void SdpoHangfaQ2DriverROS::checkSerialComms() {
 
 void SdpoHangfaQ2DriverROS::run() {
 
-  if (this->get_clock()->now() - sample_time_ >
-      rclcpp::Duration::from_seconds(kWatchdogMotWRef))
+  try
   {
-    rob_.mtx_.lock();
-    rob_.stopMotors();
-    rob_.mtx_.unlock();
+    if (rclcpp::Duration(this->now() - sample_time_) >
+        rclcpp::Duration::from_seconds(kWatchdogMotWRef))
+    {
+      rob_.mtx_.lock();
+      rob_.stopMotors();
+      rob_.mtx_.unlock();
+    }
+  }
+  catch (std::exception& e)
+  {
+    RCLCPP_WARN(this->get_logger(),
+                "Not possible to check the driver timeout condition (%s)",
+                e.what());
+
+    sample_time_ = this->now();
+
+    return;
   }
 
   pubMotEnc();
@@ -136,7 +148,7 @@ void SdpoHangfaQ2DriverROS::pubMotEnc() {
 
 
 
-  msg.stamp = this->get_clock()->now();
+  msg.stamp = this->now();
   msg.mot_enc.resize(4);
 
 
