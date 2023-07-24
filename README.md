@@ -27,7 +27,7 @@ This communication is based on the example `4_callback` provided in the
 
 **The next version will add these features:**
 
-- Publish optionally the odometry data
+No further development is expected for this package.
 
 ## ROS
 
