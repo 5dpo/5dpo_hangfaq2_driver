@@ -31,19 +31,20 @@ No further development is expected for this package.
 
 ## ROS
 
-**foxy**
+**ROS 1**
+
+- [Ubuntu 20.04.6 LTS](https://releases.ubuntu.com/focal/)
+- [ROS Noetic](https://wiki.ros.org/noetic)
+
+**ROS 2**
 
 - [Ubuntu 20.04.6 LTS](https://releases.ubuntu.com/focal/)
 - [ROS 2 Foxy](https://docs.ros.org/en/foxy/)
 
-**noetic**
-
-- [Ubuntu 20.04.6 LTS](https://releases.ubuntu.com/focal/)
-- [ROS 1 Noetic](https://wiki.ros.org/noetic/)
-
 ### Dependencies
 
-- [rclcpp](https://index.ros.org/r/rclcpp/)
+- [rclcpp](https://index.ros.org/r/rclcpp/) (_ROS 2_)
+- [roscpp](https://wiki.ros.org/roscpp/) (_ROS 1_)
 - [sdpo_drivers_interfaces](https://github.com/5dpo/5dpo_drivers_interfaces)
 - [sdpo_serial_port](https://github.com/5dpo/5dpo_serial_port)
 - [serial_communication_channels](https://github.com/5dpo/serial_communication_channels)
@@ -57,13 +58,11 @@ No further development is expected for this package.
 
 ### Subscribes
 
-- motors_ref
-  ([MotRefArray.msg](https://github.com/5dpo/5dpo_drivers_interfaces/blob/foxy/msg/MotRefArray.msg))
+- motors_ref (`sdpo_drivers_interfaces::MotRefArray.msg`)
 
 ### Publishes
 
-- motors_enc
-  ([MotEncArray.msg](https://github.com/5dpo/5dpo_drivers_interfaces/blob/foxy/msg/MotEncArray.msg))
+- motors_enc (`sdpo_drivers_interfaces::MotEncArray.msg`)
 
 ### Services
 
@@ -75,10 +74,33 @@ None.
 
 ## Usage
 
-### Build
+### Compilation
+
+**ROS 1**
 
 ```sh
-# ROS 2
+# ROS 1 environment setup
+source source /opt/ros/noetic/setup.bash
+
+# Create workspace
+mkdir -p ~/ros1_ws/src
+
+# Clone the repository
+cd ~/ros1_ws/src
+git clone git@github.com:5dpo/5dpo_hangfaq2_driver.git
+
+# Build
+cd ~/ros1_ws
+catkin_make
+# OR catkin_make_isolated (more slow, build and check dependencies individually)
+# OR catkin build (requires the Pyhton-based catkin tools)
+source devel/setup.bash
+```
+
+**ROS 2**
+
+```sh
+# ROS 2 environment setup
 source /opt/ros/foxy/setup.bash
 
 # Create workspace
@@ -89,11 +111,20 @@ cd ~/ros2_ws/src
 git clone git@github.com:5dpo/5dpo_hangfaq2_driver.git
 
 # Build
+cd ~/ros2_ws
 colcon build
 source install/setup.bash
 ```
 
 ### Launch
+
+**ROS 1**
+
+```sh
+roslaunch sdpo_hangfaq2_driver sdpo_hangfaq2_driver.launch
+```
+
+**ROS 2**
 
 ```sh
 ros2 launch sdpo_hangfaq2_driver sdpo_hangfaq2_driver.launch.xml
@@ -107,4 +138,4 @@ ros2 launch sdpo_hangfaq2_driver sdpo_hangfaq2_driver.launch.xml
 ## Contacts
 
 If you have any questions or you want to know more about this work, please
-contact any member of the 5dpo Robotics Team.
+contact any member of the [5dpo Robotics Team](https://5dpo.github.io/).
