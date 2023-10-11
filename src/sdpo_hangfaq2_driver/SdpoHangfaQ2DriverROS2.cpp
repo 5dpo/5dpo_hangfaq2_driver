@@ -7,11 +7,19 @@ using namespace std::chrono_literals;
 SdpoHangfaQ2DriverROS2::SdpoHangfaQ2DriverROS2()
     : Node("sdpo_hangfaq2_driver") , serial_comms_first_fault_(true) {
 
-  this->declare_parameter<double>("encoder_res", 48.0);
-  this->declare_parameter<double>("gear_reduction", 64.0);
-  this->declare_parameter<std::string>("serial_port_name", "/dev/ttyACM0");
+  try
+  {
+    getParam();
+  }
+  catch (std::exception& e)
+  {
+    RCLCPP_FATAL(this->get_logger(),
+                 "Error reading the node parameters (%s)", e.what());
 
-  getParam();
+    rclcpp::shutdown();
+
+    return;
+  }
 
 
 
@@ -30,7 +38,7 @@ SdpoHangfaQ2DriverROS2::SdpoHangfaQ2DriverROS2()
 
 
 
-  rob_.setSerialPortName(serial_port_name_.get_value<std::string>());
+  rob_.setSerialPortName(serial_port_name_);
   rob_.openSerial();
 
   rob_.run = std::bind(&SdpoHangfaQ2DriverROS2::run, this);
@@ -46,19 +54,18 @@ SdpoHangfaQ2DriverROS2::SdpoHangfaQ2DriverROS2()
 
 void SdpoHangfaQ2DriverROS2::getParam() {
 
-  encoder_res_ = this->get_parameter("encoder_res");
-
-  gear_reduction_ = this->get_parameter("gear_reduction");
-
-  serial_port_name_ = this->get_parameter("serial_port_name");
+  encoder_res_ = this->declare_parameter<double>("encoder_res", 48.0);
+  gear_reduction_ = this->declare_parameter<double>("gear_reduction", 64.0);
+  serial_port_name_ =
+      this->declare_parameter<std::string>("serial_port_name", "/dev/ttyACM0");
 
 
 
   for (auto& m : rob_.mot) {
 
-    m.encoder_res = encoder_res_.get_value<double>();
+    m.encoder_res = encoder_res_;
 
-    m.gear_reduction = gear_reduction_.get_value<double>();
+    m.gear_reduction = gear_reduction_;
 
   }
 
@@ -71,8 +78,7 @@ void SdpoHangfaQ2DriverROS2::getParam() {
               "Gear reduction ratio: %lf (n:1)", rob_.mot[0].gear_reduction);
 
   RCLCPP_INFO(this->get_logger(),
-              "Serial port: %s",
-              serial_port_name_.get_value<std::string>().c_str());
+              "Serial port: %s", serial_port_name_.c_str());
 
 }
 
@@ -87,7 +93,7 @@ void SdpoHangfaQ2DriverROS2::checkSerialComms() {
       serial_comms_first_fault_ = false;
       RCLCPP_INFO(this->get_logger(),
                   "Couldn't open the serial port %s. Will retry every second.",
-                  serial_port_name_.get_value<std::string>().c_str());
+                  serial_port_name_.c_str());
     }
 
     rob_.mtx_.lock();
@@ -101,8 +107,7 @@ void SdpoHangfaQ2DriverROS2::checkSerialComms() {
     {
       serial_comms_first_fault_ = true;
       RCLCPP_INFO(this->get_logger(),
-                  "Opened serial port %s.",
-                  serial_port_name_.get_value<std::string>().c_str());
+                  "Opened serial port %s.", serial_port_name_.c_str());
 
       rob_.init();
     }

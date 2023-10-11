@@ -35,9 +35,9 @@ class SdpoHangfaQ2DriverROS2 : public rclcpp::Node
 
 
 
-  rclcpp::Parameter encoder_res_;
-  rclcpp::Parameter gear_reduction_;
-  rclcpp::Parameter serial_port_name_;
+  double encoder_res_;
+  double gear_reduction_;
+  std::string serial_port_name_;
 
 
 
