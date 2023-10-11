@@ -96,7 +96,69 @@ if("$ENV{ROS_VERSION}" STREQUAL "2")
 
 elseif("$ENV{ROS_VERSION}" STREQUAL "1")
 
-  # TBC
+  message(AUTHOR_WARNING "Project version in ROS 1 may be deprecated")
+
+  # Find catkin macros and libraries
+  find_package(catkin REQUIRED COMPONENTS
+    roscpp
+    sdpo_drivers_interfaces
+    sdpo_serial_port
+    serial_communication_channels
+  )
+
+  # Catkin specific configuration
+  catkin_package(
+    INCLUDE_DIRS include
+    # LIBRARIES sdpo_drivers_interfaces
+    CATKIN_DEPENDS
+      roscpp
+      sdpo_drivers_interfaces
+      sdpo_serial_port
+      serial_communication_channels
+    # DEPENDS system_lib
+  )
+
+  # Build
+  # - additional header files
+  include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+  )
+
+  # - declare a C++ executable
+  add_executable(${PROJECT_NAME}
+    src/${PROJECT_NAME}/SdpoHangfaQ2.cpp
+    src/${PROJECT_NAME}/SdpoHangfaQ2DriverROS1.cpp
+    src/${PROJECT_NAME}/SerialChannelsConfig.cpp
+    src/main_ros1.cpp
+  )
+
+  # - target dependencies
+  add_dependencies(${PROJECT_NAME}
+    ${${PROJECT_NAME}_EXPORTED_TARGETS}
+    ${catkin_EXPORTED_TARGETS}
+  )
+
+  # - specify linking libraries
+  target_link_libraries(${PROJECT_NAME}
+    ${catkin_LIBRARIES}
+  )
+
+  # - installation rules
+  install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  )
+
+  install(DIRECTORY include/${PROJECT_NAME}/
+    DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+    FILES_MATCHING PATTERN "*.h"
+    PATTERN ".svn" EXCLUDE
+  )
+
+  install(
+    DIRECTORY launch
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  )
 
 
 ##########################
