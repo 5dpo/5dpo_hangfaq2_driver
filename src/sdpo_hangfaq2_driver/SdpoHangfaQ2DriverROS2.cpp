@@ -1,10 +1,10 @@
-#include "sdpo_hangfaq2_driver/SdpoHangfaQ2DriverROS.h"
+#include "sdpo_hangfaq2_driver/SdpoHangfaQ2DriverROS2.h"
 
 namespace sdpo_hangfaq2_driver {
 
 using namespace std::chrono_literals;
 
-SdpoHangfaQ2DriverROS::SdpoHangfaQ2DriverROS()
+SdpoHangfaQ2DriverROS2::SdpoHangfaQ2DriverROS2()
     : Node("sdpo_hangfaq2_driver") , serial_comms_first_fault_(true) {
 
   this->declare_parameter<double>("encoder_res", 48.0);
@@ -25,7 +25,7 @@ SdpoHangfaQ2DriverROS::SdpoHangfaQ2DriverROS()
   sub_mot_ref_ = this->create_subscription
       <sdpo_drivers_interfaces::msg::MotRefArray>(
           "motors_ref", 1,
-          std::bind(&SdpoHangfaQ2DriverROS::subMotRef, this,
+          std::bind(&SdpoHangfaQ2DriverROS2::subMotRef, this,
               std::placeholders::_1));
 
 
@@ -33,18 +33,18 @@ SdpoHangfaQ2DriverROS::SdpoHangfaQ2DriverROS()
   rob_.setSerialPortName(serial_port_name_.get_value<std::string>());
   rob_.openSerial();
 
-  rob_.run = std::bind(&SdpoHangfaQ2DriverROS::run, this);
+  rob_.run = std::bind(&SdpoHangfaQ2DriverROS2::run, this);
   rob_.init();
 
 
 
   serial_port_timer_ = this->create_wall_timer(
-      1s, std::bind(&SdpoHangfaQ2DriverROS::checkSerialComms, this));
+      1s, std::bind(&SdpoHangfaQ2DriverROS2::checkSerialComms, this));
 }
 
 
 
-void SdpoHangfaQ2DriverROS::getParam() {
+void SdpoHangfaQ2DriverROS2::getParam() {
 
   encoder_res_ = this->get_parameter("encoder_res");
 
@@ -78,7 +78,7 @@ void SdpoHangfaQ2DriverROS::getParam() {
 
 
 
-void SdpoHangfaQ2DriverROS::checkSerialComms() {
+void SdpoHangfaQ2DriverROS2::checkSerialComms() {
 
   if (!rob_.isSerialOpen())
   {
@@ -112,7 +112,7 @@ void SdpoHangfaQ2DriverROS::checkSerialComms() {
 
 
 
-void SdpoHangfaQ2DriverROS::run() {
+void SdpoHangfaQ2DriverROS2::run() {
 
   try
   {
@@ -141,7 +141,7 @@ void SdpoHangfaQ2DriverROS::run() {
 
 
 
-void SdpoHangfaQ2DriverROS::pubMotEnc() {
+void SdpoHangfaQ2DriverROS2::pubMotEnc() {
 
   sdpo_drivers_interfaces::msg::MotEncArray msg;
 
@@ -175,7 +175,7 @@ void SdpoHangfaQ2DriverROS::pubMotEnc() {
 
 
 
-void SdpoHangfaQ2DriverROS::subMotRef(
+void SdpoHangfaQ2DriverROS2::subMotRef(
     const sdpo_drivers_interfaces::msg::MotRefArray::SharedPtr msg) {
 
   if (msg->ang_speed_ref.size() >= 4) {

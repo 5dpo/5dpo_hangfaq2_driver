@@ -10,7 +10,7 @@ namespace sdpo_hangfaq2_driver {
 
 const double kWatchdogMotWRef = 0.5;
 
-class SdpoHangfaQ2DriverROS : public rclcpp::Node
+class SdpoHangfaQ2DriverROS2 : public rclcpp::Node
 {
 
  private:
@@ -49,7 +49,7 @@ class SdpoHangfaQ2DriverROS : public rclcpp::Node
 
  public:
 
-  SdpoHangfaQ2DriverROS();
+  SdpoHangfaQ2DriverROS2();
 
 
 

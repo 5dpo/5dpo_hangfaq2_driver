@@ -19,65 +19,92 @@ endif()
 
 
 
-# Dependencies
-find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(sdpo_drivers_interfaces REQUIRED)
-find_package(sdpo_serial_port REQUIRED)
-find_package(serial_communication_channels REQUIRED)
+###################################################
+#####  >>> ROBOT OPERATING SYSTEM (ROS) 2 <<< #####
+###################################################
+
+if("$ENV{ROS_VERSION}" STREQUAL "2")
+
+  # Dependencies
+  find_package(ament_cmake REQUIRED)
+  find_package(rclcpp REQUIRED)
+  find_package(sdpo_drivers_interfaces REQUIRED)
+  find_package(sdpo_serial_port REQUIRED)
+  find_package(serial_communication_channels REQUIRED)
 
 
 
-# Node Executable
-add_executable(${PROJECT_NAME}
-  src/${PROJECT_NAME}/SdpoHangfaQ2.cpp
-  src/${PROJECT_NAME}/SdpoHangfaQ2DriverROS.cpp
-  src/${PROJECT_NAME}/SerialChannelsConfig.cpp
-  src/main.cpp
-)
+  # Node Executable
+  add_executable(${PROJECT_NAME}
+    src/${PROJECT_NAME}/SdpoHangfaQ2.cpp
+    src/${PROJECT_NAME}/SdpoHangfaQ2DriverROS2.cpp
+    src/${PROJECT_NAME}/SerialChannelsConfig.cpp
+    src/main_ros2.cpp
+  )
 
-target_include_directories(${PROJECT_NAME} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-ament_target_dependencies(${PROJECT_NAME}
-  rclcpp
-  sdpo_drivers_interfaces
-  sdpo_serial_port
-  serial_communication_channels
-)
-
-
-
-# Node Executable Installation Rules
-install(
-  TARGETS ${PROJECT_NAME}
-  DESTINATION lib/${PROJECT_NAME}
-)
+  target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
+  
+  ament_target_dependencies(${PROJECT_NAME}
+    rclcpp
+    sdpo_drivers_interfaces
+    sdpo_serial_port
+    serial_communication_channels
+  )
 
 
 
-# Launch Files Installation Rules
-install(
-  DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
-)
+  # Node Executable Installation Rules
+  install(
+    TARGETS ${PROJECT_NAME}
+    DESTINATION lib/${PROJECT_NAME}
+  )
 
 
 
-# Default Config Installation Rules
-# install(
-#   DIRECTORY config
-#   DESTINATION share/${PROJECT_NAME}
-# )
+  # Launch Files Installation Rules
+  install(
+    DIRECTORY launch
+    DESTINATION share/${PROJECT_NAME}
+  )
 
 
 
-# Testing
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
+  # Default Config Installation Rules
+  # install(
+  #   DIRECTORY config
+  #   DESTINATION share/${PROJECT_NAME}
+  # )
+
+
+
+  # Testing
+  if(BUILD_TESTING)
+    find_package(ament_lint_auto REQUIRED)
+    ament_lint_auto_find_test_dependencies()
+  endif()
+
+  ament_package()
+
+
+
+###################################################
+#####  >>> ROBOT OPERATING SYSTEM (ROS) 1 <<< #####
+###################################################
+
+elseif("$ENV{ROS_VERSION}" STREQUAL "1")
+
+  # TBC
+
+
+##########################
+#####  !!! ERROR !!! #####
+##########################
+
+else()
+
+  message(FATAL_ERROR "No valid version of ROS is installed or environment variables not set")
+
 endif()
-
-ament_package()

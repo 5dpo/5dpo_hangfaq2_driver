@@ -10,7 +10,6 @@
 
 namespace sdpo_hangfaq2_driver {
 
-const int kCtrlFreq = 25;
 const int kMotCtrlFreq = 100;
 
 struct Motor {
